@@ -2,13 +2,24 @@ import * as React from "react";
 import { useAutocomplete } from "@mui/base/useAutocomplete";
 import { autocompleteClasses } from "@mui/material/Autocomplete";
 import { styled } from "@mui/material/styles";
-import CheckIcon from "@mui/icons-material/Check";
 
 import Tag from "../components/Tag";
 import { useQuery } from "react-query";
 import { fetchInputData } from "../queries/fetchInputData";
+import { useState } from "react";
+import { Item } from "../types/item";
+import { Group } from "../types/group";
 
 const IndexPage = () => {
+  const [availableValues, setAvailableValues] = useState<Item[]>([]);
+  const [autoCompleteValue, setAutoCompleteValue] = useState<Item[]>([]);
+  console.log("q! ~ autoCompleteValue:", autoCompleteValue);
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const { error, isLoading } = useQuery("itemValues", fetchInputData, {
+    onSuccess: (data) => setAvailableValues(data),
+  });
+
   const {
     getRootProps,
     getInputProps,
@@ -20,44 +31,92 @@ const IndexPage = () => {
     focused,
     setAnchorEl,
   } = useAutocomplete({
+    value: autoCompleteValue,
+    inputValue,
+    onChange(event, value, reason, details) {
+      if (reason === "removeOption") {
+        setAutoCompleteValue((prev) =>
+          prev.filter((item) => item !== details?.option)
+        );
+        return;
+      }
+
+      if (reason === "clear") {
+        setAutoCompleteValue([]);
+        return;
+      }
+
+      if (reason === "selectOption") {
+        if (details && details.option) {
+          setAutoCompleteValue((prev) => [...prev, details.option]);
+          setInputValue("");
+        }
+      }
+    },
+    onInputChange(event, value, reason) {
+      if (reason === "reset" || reason === "clear") return;
+      // @ts-ignore
+      const newSymbol = event.nativeEvent.data;
+      if (newSymbol === " ") {
+        const newValue = value.trim();
+        setAutoCompleteValue((prev) => [
+          ...prev,
+          { category: "...", id: "unique", name: newValue, value: 0 },
+        ]);
+        setInputValue("");
+        return;
+      }
+      setInputValue(value);
+    },
     id: "customized-hook-demo",
-    // defaultValue: [top100Films[1]],
     multiple: true,
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
+    options: availableValues,
+    groupBy: (option) => option.category,
+    getOptionLabel: (option) => option.name,
+    clearOnBlur: false,
   });
-  const {
-    data: values,
-    error,
-    isLoading,
-  } = useQuery("itemValues", fetchInputData);
-  console.log("q! ~ values:", values, "error", error, "isLoading", isLoading);
 
   return (
     <Wrapper>
       <div {...getRootProps()}>
         <InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
-          {value.map((option: FilmOptionType, index: number) => {
-            const { key, ...tagProps } = getTagProps({ index });
-            return <Tag key={key} {...tagProps} label={option.title} />;
+          {value.map((option: Item, index: number) => {
+            const { ...tagProps } = getTagProps({ index });
+            return (
+              <Tag {...tagProps} key={Number(option.id)} label={option.name} />
+            );
           })}
           <input {...getInputProps()} />
         </InputWrapper>
       </div>
-      {groupedOptions.length > 0 ? (
-        <Listbox {...getListboxProps()}>
-          {(groupedOptions as typeof top100Films).map((option, index) => {
-            // @ts-ignore
-            const { key, ...optionProps } = getOptionProps({ option, index });
-            return (
-              <li key={key} {...optionProps}>
-                <span>{option.title}</span>
-                <CheckIcon fontSize="small" />
-              </li>
-            );
-          })}
-        </Listbox>
-      ) : null}
+      {isLoading ? (
+        <p>loading</p>
+      ) : (
+        groupedOptions.length > 0 && (
+          <Listbox {...getListboxProps()}>
+            {(groupedOptions as Group[]).map((group: Group) => {
+              return (
+                <li key={group.key}>
+                  <p>{group.group}</p>
+                  <ul>
+                    {group.options.map((option) => {
+                      const { ...optionProps } = getOptionProps({
+                        option,
+                        index: group.index,
+                      });
+                      return (
+                        <li {...optionProps}>
+                          <span>{option.name}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            })}
+          </Listbox>
+        )
+      )}
     </Wrapper>
   );
 };
