@@ -16,26 +16,23 @@ function TagElement(props: TagProps) {
   );
 }
 
-const Tag = styled(TagElement)<TagProps>(
-  ({ theme }) => `
+const Tag = styled(TagElement)<TagProps>`
   display: flex;
   align-items: center;
-  height: 24px;
-  margin: 2px;
+  column-gap: 4px;
   line-height: 22px;
-  background-color: ${
-    theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "#fafafa"
-  };
-  border: 1px solid ${theme.palette.mode === "dark" ? "#303030" : "#e8e8e8"};
-  border-radius: 2px;
+  font-size: 18px;
+  background-color: #6d5d6e;
+  color: #f4eee0;
+  border-radius: 6px;
   box-sizing: content-box;
   padding: 0 4px 0 10px;
   outline: 0;
   overflow: hidden;
 
   &:focus {
-    border-color: ${theme.palette.mode === "dark" ? "#177ddc" : "#40a9ff"};
-    background-color: ${theme.palette.mode === "dark" ? "#003b57" : "#e6f7ff"};
+    border-color: #177ddc;
+    background-color: #003b57;
   }
 
   & span {
@@ -45,11 +42,10 @@ const Tag = styled(TagElement)<TagProps>(
   }
 
   & svg {
-    font-size: 12px;
+    font-size: 20px;
     cursor: pointer;
     padding: 4px;
   }
-`
-);
+`;
 
 export default Tag;
