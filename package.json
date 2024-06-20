@@ -1,0 +1,62 @@
+{
+  "name": "pry.co-input-demo",
+  "version": "0.0.27",
+  "private": true,
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "build": "next build && next export",
+    "clean": "rm -rf .next/ out/",
+    "dev": "next dev",
+    "eslint:check": "eslint --ignore-path .gitignore --ext '.ts,.tsx,.js' .",
+    "eslint:write": "eslint --ignore-path .gitignore --fix --ext '.ts,.tsx,.js' .",
+    "format": "npm run prettier:write && npm run eslint:write",
+    "lint": "npm run tsc:dryrun && npm run eslint:check && npm run prettier:check",
+    "prepare": "husky install",
+    "prettier:check": "npx prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:write": "npx prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "start": "next start",
+    "tsc:dryrun": "tsc --project ./tsconfig.json --pretty --noEmit"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.3",
+    "@next/font": "13.1.1",
+    "axios": "^1.7.2",
+    "next": "13.1.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-query": "^3.39.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.10",
+    "@types/styled-components": "^5.1.26",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "eslint": "^8.31.0",
+    "eslint-config-next": "^13.1.1",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-storybook": "^0.6.12",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "npm run format",
+      "npm run lint"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
+  }
+}
