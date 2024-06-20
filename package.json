@@ -6,7 +6,7 @@
     "node": "18.x"
   },
   "scripts": {
-    "build": "next build && next export",
+    "build": "next build",
     "clean": "rm -rf .next/ out/",
     "dev": "next dev",
     "eslint:check": "eslint --ignore-path .gitignore --ext '.ts,.tsx,.js' .",
@@ -55,9 +55,5 @@
       "npm run lint"
     ]
   },
-  "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended"
-    ]
-  }
+  "eslintConfig": {}
 }
