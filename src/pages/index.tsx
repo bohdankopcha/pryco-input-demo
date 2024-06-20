@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useAutocomplete } from "@mui/base/useAutocomplete";
-import { autocompleteClasses } from "@mui/material/Autocomplete";
 import { styled } from "@mui/material/styles";
+import { create } from "zustand";
 
 import Tag from "../components/Tag";
 import { useQuery } from "react-query";
@@ -10,10 +10,27 @@ import { useState } from "react";
 import { Item } from "../types/item";
 import { Group } from "../types/group";
 
+interface StateInterface {
+  availableValues: Item[] | [];
+  inputValue: string;
+  setAvailableValues: (newValues: Item[]) => void;
+  setInputValue: (newValue: string) => void;
+}
+
+const useStore = create<StateInterface>((set) => ({
+  availableValues: [],
+  inputValue: "",
+  setAvailableValues: (newValues: Item[]) =>
+    set((state) => ({ ...state, availableValues: newValues })),
+  setInputValue: (newValue: string) =>
+    set((state) => ({ ...state, inputValue: newValue })),
+}));
+
 const IndexPage = () => {
-  const [availableValues, setAvailableValues] = useState<Item[]>([]);
+  const { availableValues, inputValue, setAvailableValues, setInputValue } =
+    useStore((state) => state);
+
   const [autoCompleteValue, setAutoCompleteValue] = useState<Item[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
   const { isLoading } = useQuery("itemValues", fetchInputData, {
     onSuccess: (data) => setAvailableValues(data),
   });
