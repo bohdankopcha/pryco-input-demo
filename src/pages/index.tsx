@@ -13,10 +13,8 @@ import { Group } from "../types/group";
 const IndexPage = () => {
   const [availableValues, setAvailableValues] = useState<Item[]>([]);
   const [autoCompleteValue, setAutoCompleteValue] = useState<Item[]>([]);
-  console.log("q! ~ autoCompleteValue:", autoCompleteValue);
   const [inputValue, setInputValue] = useState<string>("");
-
-  const { error, isLoading } = useQuery("itemValues", fetchInputData, {
+  const { isLoading } = useQuery("itemValues", fetchInputData, {
     onSuccess: (data) => setAvailableValues(data),
   });
 
@@ -240,11 +238,15 @@ const OptionWrapper = styled("li")`
   cursor: pointer;
 
   &:hover {
-    background-color: #6d5d6e;
+    background-color: #3e2c41;
   }
 
   &[aria-selected="true"] {
     background-color: #6d5d6e;
+  }
+
+  &.Mui-focused {
+    background-color: #3e2c41;
   }
 `;
 
