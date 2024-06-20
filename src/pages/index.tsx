@@ -9,6 +9,7 @@ import { fetchInputData } from "../queries/fetchInputData";
 import { useState } from "react";
 import { Item } from "../types/item";
 import { Group } from "../types/group";
+import { CircularProgress } from "@mui/material";
 
 interface StateInterface {
   availableValues: Item[] | [];
@@ -106,11 +107,13 @@ const IndexPage = () => {
                 />
               );
             })}
-            <Input {...getInputProps()} />
+            <Input {...getInputProps()} disabled={isLoading} />
           </InputWrapper>
         </div>
         {isLoading ? (
-          <p>loading</p>
+          <LoaderWrapper>
+            <CircularProgress />
+          </LoaderWrapper>
         ) : (
           groupedOptions.length > 0 && (
             <Listbox {...getListboxProps()}>
@@ -234,6 +237,13 @@ const Listbox = styled("ul")`
       color: transparent;
     }
   }
+`;
+
+const LoaderWrapper = styled("div")`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
 `;
 
 const CategoryWrapper = styled("div")`
